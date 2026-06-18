@@ -68,6 +68,25 @@ e2e server runs against a **separate `api_e2e` database** (via `TEST_DATABASE=ap
 `config/database.yml`). It is created and reset automatically on each run, so RSpec and the e2e
 suite never contaminate each other regardless of the order you run them in.
 
+## Linting & Code Style
+
+The backend is linted with **RuboCop** using the [`rubocop-rails-omakase`](https://github.com/rails/rubocop-rails-omakase)
+ruleset — the same opinionated, low-bikeshedding style Rails ships with by default. The config is
+in `api/.rubocop.yml`; house-style overrides can be added there on top of the inherited gem.
+
+```bash
+cd api
+bin/rubocop          # report offenses
+bin/rubocop -A       # safe-autocorrect what it can
+```
+
+The CI `lint` job runs `bin/rubocop -f github` on every push and pull request, so style is enforced
+rather than advisory — a violation fails the build. Most offenses are auto-correctable, so the
+typical workflow is to run `bin/rubocop -A` before committing.
+
+> Note: the frontend is not yet linted. Adding ESLint + Prettier (and a matching CI job) is listed
+> under Known Limitations.
+
 ## Key Decisions & Production Considerations
 
 ### Concurrent Downloads (Race Conditions)
@@ -115,3 +134,4 @@ These are conscious tradeoffs given the time box, not oversights:
 - **`:async` ActiveJob adapter in dev.** Enqueued mailer jobs live in an in-memory thread pool and are lost on process restart. Production uses SolidQueue (already configured) which is durable.
 - **Email delivery is fire-and-forget.** A failed `deliver_later` is retried by ActiveJob but there is no dead-letter handling or buyer-facing notification if delivery permanently fails.
 - **No rate limiting on link generation or download attempts.** An abusive client could enumerate tokens or spam order creation. Production would add throttling (e.g. `rack-attack`).
+- **Frontend is not linted or type-checked in CI.** The backend has RuboCop (see "Linting & Code Style"), but the SvelteKit app has no ESLint/Prettier config and `svelte-check` isn't run in CI. The frontend also leans on `any` types in a few places. Next step: add ESLint + Prettier, wire `svelte-check` into the e2e job, and tighten the types.
