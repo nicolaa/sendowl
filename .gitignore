@@ -1,0 +1,11 @@
+# Root-level ignores for the monorepo.
+# api/ and frontend/ each keep their own .gitignore for subtree-specific rules.
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+
+# Playwright e2e output (not covered by frontend/.gitignore)
+frontend/playwright-report/
+frontend/test-results/

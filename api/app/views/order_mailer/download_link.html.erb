@@ -1,0 +1,7 @@
+<h1>Thank you for your purchase!</h1>
+
+<p>You can download your product <strong><%= @product.name %></strong> by clicking the link below:</p>
+
+<p><a href="<%= @url %>"><%= @url %></a></p>
+
+<p>This link expires in <%= @product.expiry_hours < 1 ? "#{(@product.expiry_hours * 60).round} minutes" : "#{@product.expiry_hours} hours" %> and can be downloaded <%= @product.max_download_count %> times.</p>
