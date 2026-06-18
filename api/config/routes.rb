@@ -8,11 +8,11 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :products, only: [:index, :show]
-      resources :orders, only: [:create, :index] do
+      resources :products, only: [ :index, :show ]
+      resources :orders, only: [ :create, :index ] do
         post :resend_link, on: :member
       end
-      resources :downloads, only: [:show], param: :token do
+      resources :downloads, only: [ :show ], param: :token do
         post :trigger, on: :member
       end
     end

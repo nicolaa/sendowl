@@ -8,12 +8,12 @@ module Api
 
       def create
         @order = Order.new(order_params)
-        
+
         if @order.save
           # The after_create callback generates the download link
           # Enqueue mailer job
           OrderMailer.download_link(@order, @order.raw_token_for_mailer).deliver_later
-          
+
           order_json = @order.as_json(include: { product: {}, download_link: {} })
           render json: order_json, status: :created
         else
@@ -25,17 +25,17 @@ module Api
         @order = Order.find(params[:id])
 
         if @order.download_link.expired?
-          render json: { error: 'Link is expired' }, status: :unprocessable_entity
+          render json: { error: "Link is expired" }, status: :unprocessable_entity
           return
         elsif @order.download_link.limit_reached?
-          render json: { error: 'Download limit reached' }, status: :unprocessable_entity
+          render json: { error: "Download limit reached" }, status: :unprocessable_entity
           return
         end
 
         @order.reset_download_link!
-        
+
         OrderMailer.download_link(@order, @order.raw_token_for_mailer).deliver_later
-        
+
         order_json = @order.as_json(include: { product: {}, download_link: {} })
         render json: order_json, status: :ok
       rescue ActiveRecord::RecordNotFound

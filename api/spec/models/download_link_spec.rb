@@ -28,7 +28,7 @@ RSpec.describe DownloadLink, type: :model do
 
   it 'safely increments download count concurrently without exceeding limit' do
     link = order.download_link
-    
+
     threads = []
     5.times do
       threads << Thread.new do
@@ -37,9 +37,9 @@ RSpec.describe DownloadLink, type: :model do
         end
       end
     end
-    
+
     threads.each(&:join)
-    
+
     expect(link.reload.download_count).to eq(2)
   end
 end

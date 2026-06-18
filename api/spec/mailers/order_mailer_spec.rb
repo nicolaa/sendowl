@@ -9,8 +9,8 @@ RSpec.describe OrderMailer, type: :mailer do
 
     it "renders the headers" do
       expect(mail.subject).to eq("Your download link for E-Book")
-      expect(mail.to).to eq(["buyer@example.com"])
-      expect(mail.from).to eq(["no-reply@sendowl-clone.com"])
+      expect(mail.to).to eq([ "buyer@example.com" ])
+      expect(mail.from).to eq([ "no-reply@sendowl-clone.com" ])
     end
 
     it "renders the body with the correct download URL" do
